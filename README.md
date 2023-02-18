@@ -22,6 +22,24 @@
 .\venv\Scripts\python.exe  manage.py migrate
 ```
 
+### Make Virtual Env
+
+```bash
+python -m venv venv
+```
+
+### Activate Virtual Env
+
+```bash
+.\venv\Scripts\activate
+```
+
+### Install Requirements
+
+```bash
+pip install -r .\requirements.txt
+```
+
 ### Make Requirement.txt
 
 ```bash
