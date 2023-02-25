@@ -7,7 +7,22 @@ from Products.serializers import ProductsSerializer
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 
-# Create your views here.
+
+# imports for tensorflow
+from tensorflow.keras.applications.resnet50 import  preprocess_input
+import numpy as np
+from tensorflow.keras.preprocessing import image
+from keras.models import load_model
+import environ
+
+# Initialise environment variables
+env = environ.Env()
+environ.Env.read_env()
+
+
+# imports for image to array
+
+model = load_model(env('SEARCH_BY_IMAGE_PATH'))
 
 
 @api_view(['GET'])
@@ -19,7 +34,8 @@ def Get_Products(request, *args, **kwargs):
 
     data = {}
     if model_data:
-        data = ProductsSerializer(model_data, many=True).data # many=False if you want only one result
+        # many=False if you want only one result
+        data = ProductsSerializer(model_data, many=True).data
 
     return Response(data)
 
@@ -39,6 +55,25 @@ def Post_Products(request, *args, **kwargs):
     }
     """
     data = {}
+
+    try:
+        # creating a array from image
+        img = image.load_img("searchByImage/"+request.FILES["product_search_image"].name,
+                             target_size=(224, 224))
+        image_array = image.img_to_array(img)
+        expand_img_array = np.expand_dims(image_array, axis=0)
+
+        processed_image = preprocess_input(expand_img_array)
+
+        result = model.predict(processed_image).flatten()
+
+        product_unique_array = result/np.linalg.norm(result)
+
+        return Response(product_unique_array)
+
+    except Exception as e:
+        print("Error! ", e)
+
     serializer = ProductsSerializer(data=request.data)
 
     data = {}

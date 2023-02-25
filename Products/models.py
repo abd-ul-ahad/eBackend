@@ -1,4 +1,9 @@
 from django.db import models
+import environ
+
+# Initialise environment variables
+env = environ.Env()
+environ.Env.read_env()
 
 
 class Products(models.Model):
@@ -9,6 +14,8 @@ class Products(models.Model):
     product_available = models.BooleanField(default=True)
     product_discount = models.CharField(max_length=20)
     product_added_date = models.DateTimeField(auto_now=True)
+    product_search_image = models.ImageField(upload_to=env('SEARCH_IMAGE_DIR'))
+    product_unique_array = models.JSONField(null=True)
     # product_search_image = models.ImageField()
     # product_images = models.ArrayField(
     #     model_container=models.ImageField

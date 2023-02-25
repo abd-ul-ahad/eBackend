@@ -1,7 +1,7 @@
 ### Create a App
 
 ```bash
-.\venv\Scripts\python.exe  manage.py startapp ProductsApis
+.\venv\Scripts\python.exe  manage.py startapp <name>
 ```
 
 ### Run Project
